@@ -53,7 +53,7 @@ class CameraPreview(context: Context, private var attrs:AttributeSet):ViewGroup(
     }
 
     @Throws(IOException::class)
-    private fun stop() {
+     fun stop() {
         if(cameraSource!=null)
             cameraSource!!.stop()
     }
@@ -84,8 +84,9 @@ class CameraPreview(context: Context, private var attrs:AttributeSet):ViewGroup(
 
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-       var prevWidth=0
-       var prevHeight=0
+       var prevWidth=600
+       var prevHeight=640
+        if(cameraSource==null) Log.d("onLayout","cxamera source is null *********************************************")
         if(cameraSource!=null){
             var size=cameraSource!!.previewSize
             if (size != null) {

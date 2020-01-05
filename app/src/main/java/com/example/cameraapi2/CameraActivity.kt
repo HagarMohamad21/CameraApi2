@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import com.example.cameraapi2.FaceRecognition.FaceTracker
+import com.example.cameraapi2.Utils.CameraPreview
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.vision.CameraSource
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.MultiProcessor
@@ -14,10 +17,11 @@ import com.google.android.gms.vision.Tracker
 import com.google.android.gms.vision.face.Face
 import com.google.android.gms.vision.face.FaceDetector
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.IOException
 
 class CameraActivity : AppCompatActivity() {
     var cameraSource:CameraSource?=null
-   var isFrontCameraOn=false
+   var isFrontCameraOn=true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -78,4 +82,35 @@ class CameraActivity : AppCompatActivity() {
         detector.setProcessor(processor)
         return detector
     }
+
+
+    fun startCameraSource()
+    {
+        var code=GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this)
+    if(code!=ConnectionResult.SUCCESS){
+        var dialog=GoogleApiAvailability.getInstance().getErrorDialog(this,code,9001)
+        dialog.show()
+    }
+    if(cameraSource!=null){
+        try{
+cameraPreview!!.start(cameraSource,graphicOverlay)
+        }
+        catch ( e:IOException){
+    cameraSource!!.release()
+            cameraSource=null
+        }
+    }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startCameraSource()
+    }
+
+    override fun onPause() {
+        super.onPause()
+       cameraPreview.stop()
+    }
+
 }
