@@ -47,35 +47,38 @@ class FaceGraphics(
 
     }
 
-
-    override fun onDraw(canvas: Canvas) {
+    fun update(faceData: FaceData) {
+        mFaceData = faceData
+        postInvalidate()
+    }
+    override
+    fun onDraw(canvas: Canvas) {
 // confirm face date is still available
-        if (mFaceData == null)
-            return
+        var faceData: FaceData? = mFaceData ?: return
         //get the face data
-        var detectPos = mFaceData!!.position
-        var leftEyePosDetected = mFaceData!!.leftEyePosition
-        var rightEyeDetected = mFaceData!!.rightEyePosition
-        var nosePosDetected = mFaceData!!.noseBasePosition
-        var mouthLeftPosDetected = mFaceData!!.mouthLeftPosition
-        var mouthRightPosDetected = mFaceData!!.mouthRightPosition
-        var mouthBottomPosDetected = mFaceData!!.mouthBottomPosition
+        var detectPos = faceData!!.position
+        var leftEyePosDetected = faceData!!.leftEyePosition
+        var rightEyeDetected = faceData!!.rightEyePosition
+        var nosePosDetected = faceData!!.noseBasePosition
+        var mouthLeftPosDetected = faceData!!.mouthLeftPosition
+        var mouthRightPosDetected = faceData!!.mouthRightPosition
+        var mouthBottomPosDetected = faceData!!.mouthBottomPosition
 
         // face position ,dimension and angle
         var position = PointF(translateX(detectPos!!.x), translateY(detectPos.y))
-        var width = scaleX(mFaceData!!.width)
-        var height = scaleY(mFaceData!!.height)
+        var width = scaleX(faceData!!.width)
+        var height = scaleY(faceData!!.height)
 
         // eye coordinates
         var leftEyePos = PointF(translateX(leftEyePosDetected!!.x), translateY(leftEyePosDetected.y))
         var rightEyePos = PointF(translateX(rightEyeDetected!!.x), translateY(rightEyeDetected.y))
 
         //eye state
-        var isLeftEyeOpen=mFaceData!!.isLeftEyeOpen
-        var isRightEyeOpen=mFaceData!!.isRightEyeOpen
+        var isLeftEyeOpen=faceData!!.isLeftEyeOpen
+        var isRightEyeOpen=faceData!!.isRightEyeOpen
 
         //nose coordinates
-        var nosePos=PointF(translateX(nosePosDetected!!.x),translateY(nosePosDetected.y))
+        var nosePos=PointF(translateX(nosePosDetected!!.x),translateY(nosePosDetected.y)+100)
 
         //mouth coordinates
         var mouthLeftPos=PointF(translateX(mouthLeftPosDetected!!.x)
@@ -84,11 +87,11 @@ class FaceGraphics(
         var mouthBottomPos=PointF(translateX(mouthBottomPosDetected!!.x),translateY(mouthBottomPosDetected.y))
 
         // smile state
-        var isSmiling=mFaceData!!.isSmiling
+        var isSmiling=faceData!!.isSmiling
 
         // head tilt
-        var eulerY=mFaceData!!.eulerY
-        var eulerZ=mFaceData!!.eulerZ
+        var eulerY=faceData!!.eulerY
+        var eulerZ=faceData!!.eulerZ
 
  /*  calculate the distance between the eyes using Pythagoras' and
          we will use that distance to set the size of the eyes
@@ -108,7 +111,7 @@ class FaceGraphics(
         rightEyePos: PointF,
         faceWidth: Float
     ) {
-        val noseFaceWidthRatio:Float=1/.5f
+        val noseFaceWidthRatio:Float=1/2f
         var noseWidth=faceWidth*noseFaceWidthRatio
         var leftBound:Int=((nosePos.x)-(noseWidth/2)).toInt()
         var rightBound:Int=((nosePos.x)+(noseWidth/2)).toInt()
@@ -121,8 +124,5 @@ class FaceGraphics(
     }
 
 
-    fun update(faceData: FaceData) {
-        mFaceData = faceData
-        postInvalidate()
-    }
+
 }
